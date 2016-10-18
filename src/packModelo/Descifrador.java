@@ -55,11 +55,10 @@ public class Descifrador {
         for (byte b : digest) {
            System.out.print(Integer.toHexString(0xFF & b));
         }
-
         // Se escribe codificado base 64. Se necesita la librería
         // commons-codec-x.x.x.jar de Apache
         byte[] encoded = encodeBase64(digest);
-    	return new String(encoded);	
+    	return new String(encoded);
     }
 	
 	public String aes(String key, String iv, String cleartext) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException{
