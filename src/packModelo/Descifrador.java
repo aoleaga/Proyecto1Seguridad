@@ -55,7 +55,6 @@ public class Descifrador {
         for (byte b : digest) {
            System.out.print(Integer.toHexString(0xFF & b));
         }
-
         // Se escribe codificado base 64. Se necesita la librería
         // commons-codec-x.x.x.jar de Apache
         byte[] encoded = encodeBase64(digest);
