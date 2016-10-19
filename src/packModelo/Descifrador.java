@@ -46,20 +46,34 @@ public class Descifrador {
 	}
 	
 	public String md5(String cleartext) throws NoSuchAlgorithmException{
+		System.out.println("MD5---------------------------------------");
 		MessageDigest md = MessageDigest.getInstance(MessageDigestAlgorithms.MD5);
         md.update(cleartext.getBytes());
         byte[] digest = md.digest();
         String[] hexa=null;
         int i=0;
+        String enc="";
+        
         // Se escribe byte a byte en hexadecimal
         for (byte b : digest) {
-           System.out.print(Integer.toHexString(0xFF & b));
+        	if(Integer.toHexString(0xFF & b).length()<2){
+     		   enc=enc+'0'+Integer.toHexString(0xFF & b);
+     	   }
+     	   else{
+     		   enc=enc+Integer.toHexString(0xFF & b);
+     	   }
         }
+        System.out.println(enc);
         // Se escribe codificado base 64. Se necesita la librería
         // commons-codec-x.x.x.jar de Apache
-        byte[] encoded = encodeBase64(digest);
-    	return new String(encoded);
+        return enc;
     }
+	
+	public String base64(String cleartext){
+		System.out.println("Base64---------------------------------------");
+		byte[]   bytesEncoded = encodeBase64(cleartext.getBytes());
+		return new String(bytesEncoded);
+	}
 	
 	public String aes(String key, String iv, String cleartext) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException{
     	Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
@@ -71,18 +85,26 @@ public class Descifrador {
 	}
 	
 	public String sha(String cleartext) throws NoSuchAlgorithmException{
+		System.out.println("SHA---------------------------------------");
 		MessageDigest md = MessageDigest.getInstance(MessageDigestAlgorithms.SHA_1);
         md.update(cleartext.getBytes());
         byte[] digest = md.digest();
 
+        String enc="";
+        int i=0;
         // Se escribe byte a byte en hexadecimal
         for (byte b : digest) {
-           System.out.print(Integer.toHexString(0xFF & b));
+        	   if(Integer.toHexString(0xFF & b).length()<2){
+        		   enc=enc+'0'+Integer.toHexString(0xFF & b);
+        	   }
+        	   else{
+        		   enc=enc+Integer.toHexString(0xFF & b);
+        	   }
         }
-        // Se escribe codificado base 64. Se necesita la librería
-        // commons-codec-x.x.x.jar de Apache
-        byte[] encoded = encodeBase64(digest);
-    	return new String(encoded);
+        
+        System.out.println(enc.length());
+       
+        return enc;
 	}
 	
 	public String des(String key, String iv, String cleartext) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException, IllegalBlockSizeException, BadPaddingException{
@@ -126,8 +148,8 @@ public class Descifrador {
         else if(getAlgoritmo().equals("SHA")){
         	return this.sha(cleartext);
         }
-        else if(getAlgoritmo().equals("RSA")){
-        	return this.rsa(cleartext);
+        else if(getAlgoritmo().equals("Base64")){
+        	return this.base64(cleartext);
         }
         else{
         	return "No existe";
@@ -189,10 +211,10 @@ public class Descifrador {
 		System.out.println(txtEnc.length());
 		while(i<=txtEnc.length()&&!salir){
 			System.out.println("----------------------------"+i+"-------------------------");
-			 char[] chars = "abcdefghijklmnñopqrstuvwxyz".toCharArray();
-			 char[] charsM = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ".toCharArray();
+			 char[] chars = "abcdefghijklmnñopqrstuvwxyz ".toCharArray();
+			 char[] charsM = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ ".toCharArray();
 			 this.iterate(chars, i, new char[i], 0);
-			 this.iterate(charsM, i, new char[i], 0);
+			 //this.iterate(charsM, i, new char[i], 0);
 			 Iterator<String> it=this.palabras.iterator();
 			 while(it.hasNext()&&!salir){
 				palabra=it.next();
@@ -202,6 +224,7 @@ public class Descifrador {
 				}
 			 }
 			 i++;
+			 palabras.clear();
 		}
 		return palabra;
 	}
